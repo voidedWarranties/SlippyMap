@@ -60,4 +60,12 @@ namespace SlippyMap.Game
             return LatToTile(lonlat, to);
         }
     }
+
+    public static class Vector2Extensions
+    {
+        public static Vector2 Floor(this Vector2 vec)
+        {
+            return new Vector2((int)vec.X, (int)vec.Y);
+        }
+    }
 }

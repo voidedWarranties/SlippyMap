@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Newtonsoft.Json;
 using osu.Framework.Allocation;
@@ -23,6 +24,11 @@ namespace SlippyMap.Game
 
         public TileMetadata Metadata;
 
+        private Container layers;
+
+        private Vector2 topLeftT;
+        private int tileWidth;
+
         public Map(IResourceStore<byte[]> store, string tilePath = "stamen-watercolor")
         {
             this.store = store;
@@ -31,9 +37,9 @@ namespace SlippyMap.Game
 
             var metadataPath = $"Maps/{tilePath}/metadata.json";
 
-            using (var sw = new StreamReader(store.GetStream(metadataPath)))
+            using (var sr = new StreamReader(store.GetStream(metadataPath)))
             {
-                var metadata = JsonConvert.DeserializeObject<TileMetadata>(sw.ReadToEnd());
+                var metadata = JsonConvert.DeserializeObject<TileMetadata>(sr.ReadToEnd());
 
                 if (metadata == null) throw new Exception("Metadata could not be parsed");
                 if (metadata.Bounds.Count != 4) throw new Exception("Bounds array should be 4 elements long");
@@ -50,9 +56,23 @@ namespace SlippyMap.Game
             var topLeft = new Vector2((float)Metadata.Bounds[0], (float)Metadata.Bounds[3]);
             var bottomRight = new Vector2((float)Metadata.Bounds[2], (float)Metadata.Bounds[1]);
 
-            var topLeftT = OsmMath.LatToTile(topLeft, Metadata.MinZoom);
+            topLeftT = OsmMath.LatToTile(topLeft, Metadata.MinZoom);
             var bottomRightT = OsmMath.LatToTile(bottomRight, Metadata.MinZoom);
-            var tileWidth = 256 / (1 << (Metadata.MinZoom - 5));
+            tileWidth = 256 / (1 << (Metadata.MinZoom - 5));
+            var size = (bottomRightT.Floor() - topLeftT.Floor() + new Vector2(1)) * tileWidth;
+
+            GridContainer gridContainer;
+            InternalChildren = new Drawable[]
+            {
+                gridContainer = new GridContainer
+                {
+                    Size = size
+                },
+                layers = new Container
+                {
+                    Size = size
+                }
+            };
 
             List<Drawable> row = new List<Drawable>();
             List<Drawable[]> grid = new List<Drawable[]>();
@@ -71,11 +91,32 @@ namespace SlippyMap.Game
                 row.Clear();
             }
 
-            InternalChild = new GridContainer
+            gridContainer.Content = grid.ToArray();
+        }
+
+        public void AddLayer<T>(T layer)
+            where T : Drawable, ILayer
+        {
+            Schedule(() =>
             {
-                Content = grid.ToArray(),
-                Size = (bottomRightT - topLeftT + new Vector2(1)) * tileWidth
-            };
+                layers.Add(layer);
+            });
+        }
+
+        protected override void Update()
+        {
+            base.Update();
+
+            foreach (var child in layers.Children)
+            {
+                var l = child as ILayer;
+
+                Trace.Assert(l != null);
+
+                l.TileSize = tileWidth;
+                l.Offset = topLeftT;
+                l.MinZoom = Metadata.MinZoom;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@
     <ProjectReference Include="..\SlippyMap.Resources\SlippyMap.Resources.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="GeoJSON.Net" Version="1.2.22-rc" />
     <PackageReference Include="ppy.osu.Framework" Version="2021.513.0" />
   </ItemGroup>
 </Project>
