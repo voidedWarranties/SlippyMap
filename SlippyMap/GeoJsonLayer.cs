@@ -9,7 +9,7 @@ using osu.Framework.Graphics.Containers;
 using osuTK;
 using Path = osu.Framework.Graphics.Lines.Path;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     public class GeoJsonLayer : CompositeDrawable, ILayer
     {

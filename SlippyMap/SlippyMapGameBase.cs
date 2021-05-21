@@ -1,11 +1,11 @@
-using osu.Framework.Allocation;
+﻿using osu.Framework.Allocation;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.IO.Stores;
 using osuTK;
 using SlippyMap.Resources;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     public class SlippyMapGameBase : osu.Framework.Game
     {

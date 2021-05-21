@@ -1,7 +1,7 @@
 ﻿using System;
 using osuTK;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     /// <summary>
     /// A summary of these calculations can be found on the OpenStreetMap wiki.

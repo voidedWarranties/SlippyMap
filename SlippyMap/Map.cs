@@ -12,7 +12,7 @@ using osu.Framework.IO.Stores;
 using osu.Framework.Platform;
 using osuTK;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     public class Map : CompositeDrawable
     {

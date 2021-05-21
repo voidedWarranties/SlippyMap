@@ -1,6 +1,6 @@
 using osu.Framework.Testing;
 
-namespace SlippyMap.Game.Tests.Visual
+namespace SlippyMap.Tests.Visual
 {
     public class SlippyMapTestScene : TestScene
     {

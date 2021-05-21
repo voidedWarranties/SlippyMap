@@ -1,6 +1,6 @@
 ﻿using osuTK;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     public interface ILayer
     {

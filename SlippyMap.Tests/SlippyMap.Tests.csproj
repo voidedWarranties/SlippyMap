@@ -4,11 +4,11 @@
     <TargetFramework>net5.0</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
-  <ItemGroup Label="Project References">
-    <ProjectReference Include="..\SlippyMap.Game\SlippyMap.Game.csproj" />
-  </ItemGroup>
   <ItemGroup Label="Package References">
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.9.4" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.15.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SlippyMap\SlippyMap.csproj" />
   </ItemGroup>
 </Project>

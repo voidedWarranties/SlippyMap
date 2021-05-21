@@ -1,7 +1,7 @@
 ﻿using osu.Framework;
 using osu.Framework.Platform;
 
-namespace SlippyMap.Game.Tests
+namespace SlippyMap.Tests
 {
     public static class Program
     {

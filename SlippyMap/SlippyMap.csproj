@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <RootNamespace>SlippyMap</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SlippyMap.Resources\SlippyMap.Resources.csproj" />

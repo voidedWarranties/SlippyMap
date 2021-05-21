@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     /// <summary>
     /// https://github.com/mapbox/tilejson-spec/tree/master/2.2.0

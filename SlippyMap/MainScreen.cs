@@ -5,7 +5,7 @@ using osu.Framework.Graphics.Sprites;
 using osu.Framework.Screens;
 using osuTK.Graphics;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     public class MainScreen : Screen
     {

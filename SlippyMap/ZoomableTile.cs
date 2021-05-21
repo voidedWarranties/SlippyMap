@@ -8,7 +8,7 @@ using osu.Framework.Graphics.Textures;
 using osu.Framework.Platform;
 using osuTK;
 
-namespace SlippyMap.Game
+namespace SlippyMap
 {
     /// <summary>
     /// A map tile that will render its own subdivisions (4 for each tile) automatically when zoom level is changed.

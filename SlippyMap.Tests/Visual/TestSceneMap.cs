@@ -5,7 +5,7 @@ using osu.Framework.Platform;
 using osu.Framework.Testing;
 using SlippyMap.Resources;
 
-namespace SlippyMap.Game.Tests.Visual
+namespace SlippyMap.Tests.Visual
 {
     public class TestSceneMap : TestScene
     {

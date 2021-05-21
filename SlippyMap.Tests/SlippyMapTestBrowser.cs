@@ -3,7 +3,7 @@ using osu.Framework.Graphics.Cursor;
 using osu.Framework.Platform;
 using osu.Framework.Testing;
 
-namespace SlippyMap.Game.Tests
+namespace SlippyMap.Tests
 {
     public class SlippyMapTestBrowser : SlippyMapGameBase
     {
