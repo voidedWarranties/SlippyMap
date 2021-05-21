@@ -16,15 +16,15 @@ namespace SlippyMap.Game
     /// </summary>
     public class ZoomableTile : CompositeDrawable
     {
-        private const string tile_path = "stamen-watercolor";
+        private readonly string tilePath;
 
         private readonly Vector2 tilePosition;
 
         private readonly int baseZoom;
 
-        public readonly BindableNumber<int> ZoomLevel = new BindableNumber<int>();
+        public readonly BindableInt ZoomLevel = new BindableInt();
 
-        private Sprite tile;
+        private DelayedLoadUnloadWrapper tile;
 
         private GridContainer zoomedGrid;
 
@@ -34,12 +34,13 @@ namespace SlippyMap.Game
 
         private readonly TextureStore textures;
 
-        public ZoomableTile(TextureStore textures, Vector2 tilePosition, int baseZoom, float size = 256)
+        public ZoomableTile(TextureStore textures, Vector2 tilePosition, int baseZoom, string tilePath = "stamen-watercolor", float size = 256)
         {
             this.textures = textures;
             this.tilePosition = tilePosition;
             this.baseZoom = baseZoom;
 
+            this.tilePath = tilePath;
             this.size = size;
 
             Size = new Vector2(size);
@@ -50,11 +51,11 @@ namespace SlippyMap.Game
         {
             InternalChildren = new Drawable[]
             {
-                tile = new Sprite
+                tile = new DelayedLoadUnloadWrapper(() => new Sprite
                 {
                     Size = new Vector2(size),
-                    Texture = textures.Get($"{tile_path}/_{baseZoom}/_{(int)tilePosition.X}/{(int)tilePosition.Y}", WrapMode.ClampToEdge, WrapMode.ClampToEdge)
-                },
+                    Texture = textures.Get($"{tilePath}/_{baseZoom}/_{(int)tilePosition.X}/{(int)tilePosition.Y}", WrapMode.ClampToEdge, WrapMode.ClampToEdge)
+                }, 100),
                 zoomedGrid = new GridContainer
                 {
                     Size = new Vector2(size)
@@ -72,7 +73,7 @@ namespace SlippyMap.Game
             return new DelayedLoadUnloadWrapper(() =>
             {
                 var pos = OsmMath.Zoom(tilePosition, baseZoom, targetZoom) + new Vector2(offsetX, offsetY);
-                var subTile = new ZoomableTile(textures, pos, targetZoom, size / 2f)
+                var subTile = new ZoomableTile(textures, pos, targetZoom, tilePath, size / 2f)
                 {
                     ZoomLevel = { BindTarget = ZoomLevel }
                 };
