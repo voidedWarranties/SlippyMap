@@ -1,0 +1,11 @@
+﻿{
+  "solution": {
+    "path": "SlippyMap.sln",
+    "projects": [
+      "SlippyMap.Desktop\\SlippyMap.Desktop.csproj",
+      "SlippyMap.Game\\SlippyMap.Game.csproj",
+      "SlippyMap.Game.Tests\\SlippyMap.Game.Tests.csproj",
+      "SlippyMap.Resources\\SlippyMap.Resources.csproj"
+    ]
+  }
+}
