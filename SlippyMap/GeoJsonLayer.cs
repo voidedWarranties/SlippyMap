@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using GeoJSON.Net.Feature;
 using GeoJSON.Net.Geometry;
 using Newtonsoft.Json;
@@ -87,24 +88,29 @@ namespace SlippyMap
             var path = new Path
             {
                 PathRadius = 1,
-                Colour = Colour4.Red,
-                AutoSizeAxes = Axes.None,
-                RelativeSizeAxes = Axes.Both
+                Colour = Colour4.Red
             };
 
-            List<Vector2> vertices = new List<Vector2>();
+            List<IPosition> positions = new List<IPosition>();
+
+            double minLong = double.MaxValue;
+            double maxLat = double.MinValue;
 
             foreach (var lineString in poly.Coordinates)
             {
                 foreach (var loc in lineString.Coordinates)
                 {
-                    var position = getPosition(loc);
+                    if (loc.Longitude < minLong) minLong = loc.Longitude;
+                    if (loc.Latitude > maxLat) maxLat = loc.Latitude;
 
-                    vertices.Add(position);
+                    positions.Add(loc);
                 }
             }
 
-            path.Vertices = vertices;
+            var corner = new Position(maxLat, minLong);
+
+            path.Position = getPosition(corner) - Vector2.One * path.PathRadius; // Compensate for the thickness of the line (perhaps inaccurately)
+            path.Vertices = positions.Select(p => getPosition(p) - getPosition(corner)).ToList();
 
             return path;
         }
@@ -117,6 +123,7 @@ namespace SlippyMap
                 draw();
         }
 
+        // TODO: Use DLUW?
         private void draw()
         {
             foreach (var feature in features.Features)
@@ -125,14 +132,12 @@ namespace SlippyMap
                 {
                     case MultiPolygon mp:
                         foreach (var polygon in mp.Coordinates)
-                            // AddInternal(createPoly(polygon));
-                            AddInternal(new DelayedLoadUnloadWrapper(() => createPoly(polygon), 100));
+                            AddInternal(createPoly(polygon));
 
                         break;
 
                     case Polygon p:
-                        // AddInternal(createPoly(p));
-                        AddInternal(new DelayedLoadUnloadWrapper(() => createPoly(p), 100));
+                        AddInternal(createPoly(p));
 
                         break;
                 }
