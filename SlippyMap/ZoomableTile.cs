@@ -1,4 +1,5 @@
-﻿using osu.Framework.Allocation;
+﻿using System.Collections.Generic;
+using osu.Framework.Allocation;
 using osu.Framework.Bindables;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
@@ -51,14 +52,17 @@ namespace SlippyMap
         {
             InternalChildren = new Drawable[]
             {
-                tile = new DelayedLoadUnloadWrapper(() => new Sprite
-                {
-                    Size = new Vector2(size),
-                    Texture = textures.Get($"{tilePath}/_{baseZoom}/_{(int)tilePosition.X}/{(int)tilePosition.Y}", WrapMode.ClampToEdge, WrapMode.ClampToEdge)
-                }, 100),
                 zoomedGrid = new GridContainer
                 {
-                    Size = new Vector2(size)
+                    RelativeSizeAxes = Axes.Both
+                },
+                tile = new DelayedLoadUnloadWrapper(() => new Sprite
+                {
+                    RelativeSizeAxes = Axes.Both,
+                    Texture = textures.Get($"{tilePath}/_{baseZoom}/_{(int)tilePosition.X}/{(int)tilePosition.Y}", WrapMode.ClampToEdge, WrapMode.ClampToEdge)
+                }, 0)
+                {
+                    RelativeSizeAxes = Axes.Both
                 }
             };
 
@@ -79,8 +83,13 @@ namespace SlippyMap
                 };
 
                 return subTile;
-            }, 100);
+            }, 0)
+            {
+                RelativeSizeAxes = Axes.Both
+            };
         }
+
+        private readonly List<DelayedLoadUnloadWrapper> childTiles = new List<DelayedLoadUnloadWrapper>();
 
         private void updateZoom()
         {
@@ -88,22 +97,40 @@ namespace SlippyMap
             {
                 if (!createdGrid)
                 {
+                    var tile00 = genGridTile(0, 0);
+                    var tile10 = genGridTile(1, 0);
+                    var tile01 = genGridTile(0, 1);
+                    var tile11 = genGridTile(1, 1);
+
                     zoomedGrid.Content = new[]
                     {
-                        new Drawable[] { genGridTile(0, 0), genGridTile(1, 0) },
-                        new Drawable[] { genGridTile(0, 1), genGridTile(1, 1) }
+                        new Drawable[] { tile00, tile10 },
+                        new Drawable[] { tile01, tile11 }
                     };
+
+                    childTiles.Add(tile00);
+                    childTiles.Add(tile10);
+                    childTiles.Add(tile01);
+                    childTiles.Add(tile11);
 
                     createdGrid = true;
                 }
 
-                tile.FadeOut();
+                void loaded()
+                {
+                    tile.ClearTransforms();
+                    tile.FadeOut(250);
+                }
+
+                childTiles[0].DelayedLoadComplete += d => loaded();
+                if (childTiles[0].DelayedLoadCompleted) loaded();
+
                 zoomedGrid.FadeIn();
             }
             else
             {
-                zoomedGrid.FadeOut();
                 tile.FadeIn();
+                zoomedGrid.FadeOut();
             }
         }
     }
