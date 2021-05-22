@@ -83,7 +83,7 @@ namespace SlippyMap
             return (tilePos - Offset.Floor()) * TileSize;
         }
 
-        private Path createPoly(Polygon poly)
+        private void createPoly(Polygon poly)
         {
             var path = new Path
             {
@@ -109,10 +109,19 @@ namespace SlippyMap
 
             var corner = new Position(maxLat, minLong);
 
-            path.Position = getPosition(corner) - Vector2.One * path.PathRadius; // Compensate for the thickness of the line (perhaps inaccurately)
-            path.Vertices = positions.Select(p => getPosition(p) - getPosition(corner)).ToList();
+            var targetPos = getPosition(corner);
+            var vertices = positions.Select(p => getPosition(p) - getPosition(corner)).ToList();
 
-            return path;
+            path.Position = targetPos - Vector2.One * path.PathRadius; // Compensate for the thickness of the line (perhaps inaccurately)
+            path.Vertices = vertices;
+
+            AddInternal(new DrawablePolygon
+            {
+                Position = targetPos,
+                Vertices = vertices
+            });
+
+            AddInternal(path);
         }
 
         protected override void Update()
@@ -132,12 +141,12 @@ namespace SlippyMap
                 {
                     case MultiPolygon mp:
                         foreach (var polygon in mp.Coordinates)
-                            AddInternal(createPoly(polygon));
+                            createPoly(polygon);
 
                         break;
 
                     case Polygon p:
-                        AddInternal(createPoly(p));
+                        createPoly(p);
 
                         break;
                 }

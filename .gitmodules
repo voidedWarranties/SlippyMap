@@ -1,0 +1,3 @@
+[submodule "earcut.net"]
+	path = earcut.net
+	url = https://github.com/oberbichler/earcut.net
